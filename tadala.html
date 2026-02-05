@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página com Contador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="text-center fade-in">
+        <!-- Imagem Central -->
+        <div>
+            <img 
+                src="https://s12.gifyu.com/images/bktJA.gif" 
+                alt="hmmmmmmmmmmmmmmmmmmmm lá ele"
+                onerror="this.src='https://via.placeholder.com/400x400?text=Imagem+Nao+Encontrada'"
+            >
+        </div>
+
+        <!-- Área do Contador -->
+        <div class="bg-white p-6 rounded-xl shadow-lg inline-block border border-gray-100">
+            <h2 class="text-gray-500 text-sm font-medium uppercase tracking-wider mb-2">AMIGOS GAYS</h2>
+            <div id="counter-display" class="text-5xl font-bold text-blue-600 tabular-nums">
+                ...
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, runTransaction, increment, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuração do ambiente
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Inicialização
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const counterElement = document.getElementById('counter-display');
+
+        // Função para inicializar o contador
+        async function initVisitCounter(user) {
+            if (!user) return;
+
+            // Caminho seguindo a Regra 1: /artifacts/{appId}/public/data/{collectionName}
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'global');
+
+            // 1. Ouvir atualizações em tempo real
+            onSnapshot(docRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    counterElement.innerText = snapshot.data().count || 0;
+                } else {
+                    counterElement.innerText = '0';
+                }
+            }, (error) => {
+                console.error("Erro ao ler contador:", error);
+                counterElement.innerText = "Erro";
+            });
+
+            // 2. Incrementar a visita (apenas uma vez por carregamento de sessão)
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const sfDoc = await transaction.get(docRef);
+                    if (!sfDoc.exists()) {
+                        transaction.set(docRef, { count: 1 });
+                    } else {
+                        const newCount = (sfDoc.data().count || 0) + 1;
+                        transaction.update(docRef, { count: newCount });
+                    }
+                });
+            } catch (e) {
+                console.error("Erro ao incrementar:", e);
+            }
+        }
+
+        // Autenticação (Regra 3)
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Erro na autenticação:", err);
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                initVisitCounter(user);
+            }
+        });
+
+        initAuth();
+    </script>
+</body>
+</html>
