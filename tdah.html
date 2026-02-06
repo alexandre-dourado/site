@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Acompanhamento — Tratamento</title>
+
+<style>
+:root {
+  --bg: #f4f4f4;
+  --fg: #111;
+  --muted: #666;
+  --accent: #c20000;
+  --line: #ccc;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+header {
+  padding: 32px;
+  border-bottom: 2px solid var(--fg);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: -1px;
+}
+
+header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+main {
+  padding: 32px;
+  display: grid;
+  gap: 48px;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 2px solid var(--fg);
+  background: #fff;
+  padding: 16px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.card .value {
+  font-size: 34px;
+  font-weight: bold;
+}
+
+/* TIMELINE */
+.timeline {
+  border-top: 2px solid var(--fg);
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.entry-date {
+  font-weight: bold;
+}
+
+.entry-content {
+  display: grid;
+  grid-template-columns: repeat(5, max-content);
+  gap: 8px;
+  font-size: 14px;
+  align-items: center;
+}
+
+.tag {
+  border: 1px solid var(--fg);
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.bad {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.note {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Acompanhamento de Tratamento</h1>
+  <p>Lisdexanfetamina — diário clínico</p>
+</header>
+
+<main>
+
+<section class="cards" id="summary"></section>
+
+<section>
+  <h2>Timeline</h2>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+</main>
+
+<script>
+const SHEET_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vT1JyTDdbWMSyj6puua-BwPJbfK_c9zie0PPx34P8d0zaUar_t7vPSUGsxNZqQNG1Kr3TeQim9B8xod/pub?gid=0&single=true&output=csv";
+
+fetch(SHEET_URL)
+  .then(r => r.text())
+  .then(csv => parseCSV(csv));
+
+function parseCSV(csv) {
+  const lines = csv.trim().split("\n");
+  const headers = lines.shift().split("\t");
+
+  const data = lines.map(line => {
+    const values = line.split("\t");
+    let obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
+    return obj;
+  });
+
+  renderSummary(data);
+  renderTimeline(data.reverse());
+}
+
+function avg(data, key) {
+  const nums = data.map(d => Number(d[key])).filter(n => !isNaN(n));
+  if (!nums.length) return "-";
+  return (nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1);
+}
+
+function renderSummary(data) {
+  const el = document.getElementById("summary");
+  el.innerHTML = `
+    <div class="card">
+      <h2>Sono médio (h)</h2>
+      <div class="value">${avg(data,"Sono (h)")}</div>
+    </div>
+    <div class="card">
+      <h2>Ruído mental</h2>
+      <div class="value">${avg(data,"Ruído mental (0–5)")}</div>
+    </div>
+    <div class="card">
+      <h2>Clareza mental</h2>
+      <div class="value">${avg(data,"Clareza (0–5)")}</div>
+    </div>
+    <div class="card">
+      <h2>Dias com uso</h2>
+      <div class="value">${data.filter(d => d["Usou cocaína"]==="sim").length}</div>
+    </div>
+  `;
+}
+
+function renderTimeline(data) {
+  const el = document.getElementById("timeline");
+  el.innerHTML = "";
+
+  data.forEach(d => {
+    const row = document.createElement("div");
+    row.className = "entry";
+    row.innerHTML = `
+      <div class="entry-date">${d["Data"]}</div>
+      <div class="entry-content">
+        <div class="tag">${d["Dose"]}</div>
+        <div class="tag">Sono ${d["Sono (h)"]}h</div>
+        <div class="tag">Ruído ${d["Ruído mental (0–5)"]}</div>
+        <div class="tag">Clareza ${d["Clareza (0–5)"]}</div>
+        <div class="tag ${d["Usou cocaína"]==="sim"?"bad":""}">
+          ${d["Usou cocaína"]}
+        </div>
+        <div class="note">${d["Observação curta"] || ""}</div>
+      </div>
+    `;
+    el.appendChild(row);
+  });
+}
+</script>
+
+</body>
+</html>
