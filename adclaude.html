@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AD — Alexandre Dourado · Arquitetura Digital com IA Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --gray-100: #f7f7f6;
+    --gray-200: #ebebea;
+    --gray-400: #a0a09e;
+    --gray-600: #6b6b69;
+    --gray-800: #2d2d2b;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a0;
+    --gold-pale: #faf6ed;
+    --space-xs: 8px;
+    --space-sm: 16px;
+    --space-md: 32px;
+    --space-lg: 64px;
+    --space-xl: 120px;
+    --space-2xl: 200px;
+    --max-w: 1200px;
+    --max-w-text: 720px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* UTILITIES */
+  .container {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .container--narrow {
+    max-width: var(--max-w-text);
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* TYPOGRAPHY */
+  .display {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .display--xl { font-size: clamp(56px, 7vw, 96px); }
+  .display--lg { font-size: clamp(40px, 5vw, 64px); }
+  .display--md { font-size: clamp(28px, 3.5vw, 44px); }
+  .display--sm { font-size: clamp(22px, 2.5vw, 32px); }
+
+  .label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+
+  .body-lg {
+    font-size: 19px;
+    line-height: 1.7;
+    font-weight: 300;
+    color: var(--gray-800);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    color: var(--gold);
+  }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    text-decoration: none;
+    padding: 10px 22px;
+    border: 1.5px solid var(--black);
+    border-radius: 100px;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+  .nav-cta:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  /* HERO */
+  #hero {
+    padding-top: 160px;
+    padding-bottom: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .hero-eyebrow-line {
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-headline {
+    margin-bottom: 28px;
+  }
+
+  .hero-headline .accent {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--gray-600);
+    line-height: 1.7;
+    margin-bottom: 48px;
+    max-width: 480px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 16px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    letter-spacing: 0.01em;
+    border: 1.5px solid var(--black);
+  }
+  .btn-primary:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--black);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-600);
+    text-decoration: none;
+    transition: color 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-secondary:hover { color: var(--black); }
+  .btn-secondary svg { transition: transform 0.2s; }
+  .btn-secondary:hover svg { transform: translateX(3px); }
+
+  .hero-support {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--gray-400);
+    font-weight: 300;
+  }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    position: relative;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .diagram {
+    position: relative;
+    width: 380px;
+    height: 380px;
+  }
+
+  .diagram-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--gray-200);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate 30s linear infinite;
+  }
+  .diagram-ring:nth-child(1) { width: 100%; height: 100%; animation-duration: 40s; }
+  .diagram-ring:nth-child(2) { width: 73%; height: 73%; animation-duration: 28s; animation-direction: reverse; }
+  .diagram-ring:nth-child(3) { width: 48%; height: 48%; animation-duration: 20s; }
+
+  .diagram-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    top: 50%; left: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .diagram-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .diagram-center-icon {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--black);
+  }
+
+  .diagram-center-sub {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-top: 4px;
+  }
+
+  .diagram-node {
+    position: absolute;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gray-800);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .diagram-node.active {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  @keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--gray-200);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    padding: 48px 0;
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 0 40px;
+    border-right: 1px solid var(--gray-200);
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: var(--space-xl) 0;
+  }
+
+  .section-header {
+    margin-bottom: 64px;
+  }
+
+  .section-header .label {
+    margin-bottom: 16px;
+  }
+
+  /* PROBLEM */
+  #problem {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  #problem .label { color: rgba(201,168,76,0.6); }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .problem-left .display--lg {
+    color: var(--white);
+    margin-top: 24px;
+    margin-bottom: 32px;
+  }
+
+  .problem-left .body-lg {
+    color: rgba(255,255,255,0.5);
+    font-size: 17px;
+  }
+
+  .problem-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .problem-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 32px 28px;
+    transition: all 0.2s;
+  }
+  .problem-card:hover {
+    background: rgba(255,255,255,0.07);
+  }
+
+  .problem-card-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.06);
+    letter-spacing: -0.04em;
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  .problem-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .problem-card-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+  }
+
+  .problem-card.highlight {
+    background: rgba(201,168,76,0.08);
+    border-color: rgba(201,168,76,0.2);
+  }
+  .problem-card.highlight .problem-card-title { color: var(--gold-light); }
+
+  /* SOLUTION */
+  #solution {
+    background: var(--white);
+  }
+
+  .solution-layout {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 100px;
+    align-items: center;
+  }
+
+  .solution-left .display--lg {
+    margin-top: 20px;
+    margin-bottom: 32px;
+  }
+
+  .solution-desc {
+    font-size: 17px;
+    color: var(--gray-600);
+    line-height: 1.75;
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  .solution-right {
+    position: relative;
+  }
+
+  .system-diagram {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .system-diagram::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 40px; right: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .system-layer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .system-layer:hover {
+    border-color: var(--gold);
+    transform: translateX(4px);
+  }
+  .system-layer:last-child { margin-bottom: 0; }
+
+  .layer-icon {
+    width: 36px; height: 36px;
+    background: var(--gold-pale);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .layer-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+
+  .layer-desc {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .layer-arrow {
+    text-align: center;
+    color: var(--gray-200);
+    font-size: 16px;
+    padding: 4px 0;
+    margin-bottom: 4px;
+  }
+
+  /* METHOD */
+  #method {
+    background: var(--gold-pale);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .method-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .method-name {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  .method-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .method-steps::before {
+    content: '';
+    position: absolute;
+    top: 44px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--gold-light));
+    z-index: 0;
+  }
+
+  .method-step {
+    text-align: center;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-num {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.12);
+    transition: all 0.3s;
+  }
+  .method-step:hover .step-num {
+    background: var(--gold);
+    color: var(--black);
+    transform: scale(1.05);
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  .step-body {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* BENEFITS */
+  #benefits {
+    background: var(--white);
+  }
+
+  .benefits-layout {
+    display: grid;
+    grid-template-columns: 4fr 8fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .benefits-left .display--md {
+    margin-top: 20px;
+    margin-bottom: 24px;
+  }
+
+  .benefits-left .body-text {
+    font-size: 16px;
+    color: var(--gray-600);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .benefit-item {
+    padding: 36px 32px;
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    background: var(--white);
+  }
+  .benefit-item:hover {
+    background: var(--gray-100);
+  }
+  .benefit-item::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  .benefit-item:hover::after { transform: scaleX(1); }
+
+  .benefit-icon {
+    font-size: 24px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .benefit-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-desc {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* FOR WHO */
+  #for-who {
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .for-who-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+
+  .for-who-panel {
+    padding: 56px 48px;
+    background: var(--white);
+  }
+
+  .for-who-panel.dark {
+    background: var(--black);
+  }
+
+  .panel-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .panel-label.positive { color: var(--gold); }
+  .panel-label.negative { color: rgba(255,255,255,0.3); }
+
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+
+  .panel-title.light { color: var(--black); }
+  .panel-title.white-text { color: var(--white); }
+
+  .who-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .who-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .for-who-panel:not(.dark) .who-list li { color: var(--gray-800); }
+  .for-who-panel.dark .who-list li { color: rgba(255,255,255,0.55); }
+
+  .who-mark {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
+  .who-mark.yes {
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+  }
+
+  .who-mark.no {
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.2);
+  }
+
+  /* AUTHORITY */
+  #authority {
+    background: var(--white);
+  }
+
+  .authority-layout {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 100px;
+    align-items: center;
+  }
+
+  .authority-visual {
+    position: relative;
+  }
+
+  .author-card {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .author-card::before {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 40px; right: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .author-avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: -0.03em;
+  }
+
+  .author-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  .author-role {
+    font-size: 13px;
+    color: var(--gray-400);
+    letter-spacing: 0.05em;
+    margin-bottom: 32px;
+  }
+
+  .author-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .author-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 100px;
+    color: var(--gray-600);
+    background: var(--white);
+  }
+
+  .authority-right .display--md {
+    margin-top: 20px;
+    margin-bottom: 32px;
+  }
+
+  .authority-pillar {
+    display: flex;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .authority-pillar:first-of-type { border-top: 1px solid var(--gray-200); }
+
+  .pillar-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 28px;
+    padding-top: 2px;
+  }
+
+  .pillar-content-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .pillar-content-body {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* CTA */
+  #cta {
+    background: var(--black);
+    padding: var(--space-2xl) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-eyebrow {
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 24px;
+  }
+
+  .cta-headline {
+    color: var(--white);
+    margin-bottom: 28px;
+  }
+
+  .cta-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+    max-width: 520px;
+    margin: 0 auto 56px;
+    line-height: 1.7;
+  }
+
+  .cta-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 18px 40px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    letter-spacing: 0.01em;
+  }
+  .btn-gold:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+    letter-spacing: 0.01em;
+    padding: 18px 24px;
+  }
+  .btn-ghost:hover { color: rgba(255,255,255,0.8); }
+
+  .cta-footnote {
+    margin-top: 32px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.2);
+    font-weight: 300;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: -0.02em;
+  }
+  .footer-logo span { color: var(--gold); }
+
+  .footer-text {
+    font-size: 13px;
+    color: var(--gray-400);
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .fade-up:nth-child(2) { animation-delay: 0.1s; }
+  .fade-up:nth-child(3) { animation-delay: 0.2s; }
+  .fade-up:nth-child(4) { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Intersection Observer handled via CSS scroll-driven */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .container { padding: 0 24px; }
+    .container--narrow { padding: 0 24px; }
+
+    .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+    .hero-visual { display: none; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--gray-200); padding: 24px; }
+    .problem-grid { grid-template-columns: 1fr; gap: 48px; }
+    .problem-cards { grid-template-columns: 1fr; }
+    .solution-layout { grid-template-columns: 1fr; gap: 48px; }
+    .method-steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .method-steps::before { display: none; }
+    .benefits-layout { grid-template-columns: 1fr; gap: 48px; }
+    .benefits-grid { grid-template-columns: 1fr; }
+    .for-who-grid { grid-template-columns: 1fr; }
+    .authority-layout { grid-template-columns: 1fr; gap: 48px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .method-steps { grid-template-columns: 1fr; }
+    .display--xl { font-size: 40px; }
+    .display--lg { font-size: 32px; }
+    section { padding: 80px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">AD<span>·</span></a>
+  <a href="#cta" class="nav-cta">Agendar Diagnóstico →</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content fade-up">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <span class="label">Alexandre Dourado · Arquitetura Digital</span>
+        </div>
+        <h1 class="display display--xl hero-headline">
+          Seu negócio digital precisa de <span class="accent">estrutura,</span> não de mais ferramentas.
+        </h1>
+        <p class="hero-sub">
+          Arquitetura Digital Inteligente para criadores, consultores e profissionais do conhecimento que constroem negócios para durar — com IA aplicada de forma estratégica.
+        </p>
+        <div class="hero-actions">
+          <a href="#cta" class="btn-primary">
+            Solicitar Diagnóstico Estratégico
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#method" class="btn-secondary">
+            Conhecer o método
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <p class="hero-support">Sem compromisso. Uma conversa para entender onde você está e para onde quer ir.</p>
+      </div>
+
+      <div class="hero-visual fade-up">
+        <div class="diagram">
+          <div class="diagram-ring"><div class="diagram-dot"></div></div>
+          <div class="diagram-ring"><div class="diagram-dot"></div></div>
+          <div class="diagram-ring"><div class="diagram-dot"></div></div>
+          <div class="diagram-center">
+            <div class="diagram-center-icon">AD</div>
+            <div class="diagram-center-sub">Sistema</div>
+          </div>
+          <!-- floating nodes -->
+          <div class="diagram-node active" style="top:6%;left:52%;">IA Aplicada</div>
+          <div class="diagram-node" style="top:40%;left:-8%;">Estrutura</div>
+          <div class="diagram-node" style="top:82%;left:30%;">Automação</div>
+          <div class="diagram-node" style="top:72%;right:-4%;">Escala</div>
+          <div class="diagram-node" style="top:20%;right:-8%;">Diagnóstico</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">+10</div>
+        <div class="stat-label">Anos com negócios digitais</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">IA</div>
+        <div class="stat-label">Aplicada com precisão estratégica</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Camadas do método AD</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Objetivo: sistemas que funcionam</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="problem-left reveal">
+        <div class="label">O diagnóstico</div>
+        <h2 class="display display--lg">O problema não é a falta de informação.</h2>
+        <p class="body-lg">
+          Você consome, testa, implementa. Mas algo nunca encaixa. O negócio cresce em esforço, não em estrutura. E a IA, em vez de resolver, adiciona mais camadas de ruído.
+        </p>
+      </div>
+      <div class="problem-cards reveal">
+        <div class="problem-card highlight">
+          <div class="problem-card-num">01</div>
+          <div class="problem-card-title">Caos Digital Acumulado</div>
+          <div class="problem-card-body">Stacks de ferramentas sem coesão, processos sobrepostos e decisões que dependem sempre de você. O crescimento gera complexidade, não clareza.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-num">02</div>
+          <div class="problem-card-title">Ausência de Arquitetura</div>
+          <div class="problem-card-body">Cada parte do negócio foi construída para resolver um problema pontual. Nunca como parte de um sistema maior. O resultado é um conjunto de peças que não se comunicam.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-num">03</div>
+          <div class="problem-card-title">IA Superficial</div>
+          <div class="problem-card-body">Você usa IA para tarefas isoladas. Mas sem uma lógica de integração, as ferramentas não amplificam — elas apenas substituem trabalho manual por trabalho prompting.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-num">04</div>
+          <div class="problem-card-title">Dependência Operacional</div>
+          <div class="problem-card-body">O negócio roda porque você está presente. Quando você sai, o sistema para. Isso não é autonomia — é operação disfarçada de empreendimento.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="container">
+    <div class="solution-layout">
+      <div class="solution-left reveal">
+        <div class="label">A solução</div>
+        <h2 class="display display--lg">Arquitetura Digital não é sobre ferramentas. É sobre sistemas.</h2>
+        <p class="solution-desc">
+          Um sistema digital inteligente é construído em camadas: cada decisão de infraestrutura serve a uma lógica maior. A IA entra não como atalho, mas como amplificador de uma estrutura que já funciona.
+        </p>
+        <p class="solution-desc">
+          Quando sua arquitetura está correta, o negócio opera com previsibilidade. Você toma decisões com clareza. E a escala acontece como consequência de processos bem desenhados — não de esforço adicional.
+        </p>
+      </div>
+
+      <div class="solution-right reveal">
+        <div class="system-diagram">
+          <div class="layer-arrow">↑ camadas do sistema</div>
+          <div class="system-layer">
+            <div class="layer-icon">⬡</div>
+            <div>
+              <div class="layer-name">Camada de Escala</div>
+              <div class="layer-desc">Crescimento previsível com ativos digitais sólidos</div>
+            </div>
+          </div>
+          <div class="layer-arrow">↑</div>
+          <div class="system-layer">
+            <div class="layer-icon">⚙</div>
+            <div>
+              <div class="layer-name">Camada de Automação</div>
+              <div class="layer-desc">IA integrada em fluxos que amplificam, não substituem</div>
+            </div>
+          </div>
+          <div class="layer-arrow">↑</div>
+          <div class="system-layer">
+            <div class="layer-icon">◈</div>
+            <div>
+              <div class="layer-name">Camada de Processos</div>
+              <div class="layer-desc">Operações documentadas, replicáveis e independentes</div>
+            </div>
+          </div>
+          <div class="layer-arrow">↑</div>
+          <div class="system-layer">
+            <div class="layer-icon">◻</div>
+            <div>
+              <div class="layer-name">Camada de Fundação</div>
+              <div class="layer-desc">Posicionamento, modelo de negócio e estrutura core</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section id="method">
+  <div class="container">
+    <div class="method-header reveal">
+      <div class="method-name">Método AD · Estrutura Inteligente</div>
+      <h2 class="display display--lg">Quatro etapas. Uma arquitetura coerente.</h2>
+      <p class="body-lg" style="max-width:600px;margin:20px auto 0;text-align:center;">
+        Não existe atalho para um negócio digital sólido. Existe um processo deliberado, executado na sequência correta.
+      </p>
+    </div>
+
+    <div class="method-steps">
+      <div class="method-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title">Diagnóstico</div>
+        <p class="step-body">Mapeamento profundo da situação atual: onde estão os vazios estruturais, gargalos operacionais e oportunidades de automação que passam invisíveis no dia a dia.</p>
+      </div>
+      <div class="method-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title">Estrutura</div>
+        <p class="step-body">Design da arquitetura digital do seu negócio. Modelo de operação, fluxos de valor, posicionamento e fundação para que cada decisão subsequente seja coerente.</p>
+      </div>
+      <div class="method-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title">Automação</div>
+        <p class="step-body">Integração estratégica de IA e sistemas inteligentes — não para substituir pensamento, mas para amplificar processos que já têm lógica. IA sobre estrutura, não sobre caos.</p>
+      </div>
+      <div class="method-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title">Escala</div>
+        <p class="step-body">Com a arquitetura estabelecida e os processos automatizados, o crescimento torna-se uma consequência calculável. Ativos digitais que trabalham de forma contínua e independente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section id="benefits">
+  <div class="container">
+    <div class="benefits-layout">
+      <div class="benefits-left reveal">
+        <div class="label">O que muda</div>
+        <h2 class="display display--md">O que você ganha quando a estrutura está correta.</h2>
+        <p class="benefits-text" style="font-size:16px;color:var(--gray-600);line-height:1.7;font-weight:300;margin-top:16px;">
+          Não são recursos. São resultados de arquitetura bem feita.
+        </p>
+      </div>
+
+      <div class="benefits-grid reveal">
+        <div class="benefit-item">
+          <span class="benefit-icon">◈</span>
+          <div class="benefit-title">Clareza Estrutural</div>
+          <p class="benefit-desc">Você sabe exatamente como seu negócio funciona, onde cada peça se encaixa e qual é a próxima decisão lógica. Sem confusão, sem excesso de opções.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">⚙</span>
+          <div class="benefit-title">Processos Inteligentes</div>
+          <p class="benefit-desc">Operações que rodam com consistência — com ou sem sua presença direta. Fluxos documentados, replicáveis e otimizados para cada etapa do negócio.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">⬡</span>
+          <div class="benefit-title">Automação Estratégica</div>
+          <p class="benefit-desc">IA aplicada onde faz sentido real: na produção de conteúdo, atendimento, análise e tomada de decisão. Não como experimento — como infraestrutura produtiva.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">↗</span>
+          <div class="benefit-title">Escalabilidade Previsível</div>
+          <p class="benefit-desc">Crescimento que não depende de trabalhar mais horas. Que segue uma lógica de sistema — onde mais inputs geram outputs proporcionais, não mais complexidade.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">◻</span>
+          <div class="benefit-title">Ativo Digital Sólido</div>
+          <p class="benefit-desc">Seu negócio como um ativo que tem valor independente. Uma arquitetura que pode ser expandida, delegada ou multiplicada sem reconstruir tudo do zero.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">—</span>
+          <div class="benefit-title">Decisão com Inteligência</div>
+          <p class="benefit-desc">Dashboards, dados e sistemas de feedback que informam cada decisão. Você para de operar no feeling e passa a operar com informação estruturada.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section id="for-who" style="padding:0;">
+  <div class="container" style="padding:0;max-width:100%;">
+    <div class="for-who-grid">
+      <div class="for-who-panel">
+        <div class="panel-label positive">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#c9a84c" stroke-width="1.2"/><path d="M5 8l2 2 4-4" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Para quem é
+        </div>
+        <h3 class="panel-title light">Você está no lugar certo se…</h3>
+        <ul class="who-list">
+          <li>
+            <span class="who-mark yes">✓</span>
+            <span>Você é criador, infoprodutor, consultor ou mentor com negócio digital em operação</span>
+          </li>
+          <li>
+            <span class="who-mark yes">✓</span>
+            <span>Você sente que o negócio cresceu em complexidade, mas não em clareza</span>
+          </li>
+          <li>
+            <span class="who-mark yes">✓</span>
+            <span>Você quer usar IA de forma séria, não como gimmick de produtividade</span>
+          </li>
+          <li>
+            <span class="who-mark yes">✓</span>
+            <span>Você está disposto a revisitar fundações e construir com critério</span>
+          </li>
+          <li>
+            <span class="who-mark yes">✓</span>
+            <span>Você quer um negócio que funcione como sistema, não como emprego disfarçado</span>
+          </li>
+          <li>
+            <span class="who-mark yes">✓</span>
+            <span>Você valoriza precisão, estrutura e resultados acima de hype e volume</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="for-who-panel dark">
+        <div class="panel-label negative">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/><path d="M5.5 10.5l5-5M10.5 10.5l-5-5" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Para quem não é
+        </div>
+        <h3 class="panel-title white-text">Este trabalho não é adequado se…</h3>
+        <ul class="who-list">
+          <li>
+            <span class="who-mark no">✕</span>
+            <span>Você busca resultado imediato sem processo ou disposição para construir</span>
+          </li>
+          <li>
+            <span class="who-mark no">✕</span>
+            <span>Você quer apenas automatizar o que já está quebrado, sem revisitar a base</span>
+          </li>
+          <li>
+            <span class="who-mark no">✕</span>
+            <span>Você está procurando mais uma ferramenta para adicionar ao arsenal existente</span>
+          </li>
+          <li>
+            <span class="who-mark no">✕</span>
+            <span>Você não tem clareza mínima sobre seu modelo de negócio ou oferta</span>
+          </li>
+          <li>
+            <span class="who-mark no">✕</span>
+            <span>Você prefere execução rápida com atalhos a arquitetura sólida com critério</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHORITY -->
+<section id="authority">
+  <div class="container">
+    <div class="authority-layout">
+      <div class="authority-visual reveal">
+        <div class="author-card">
+          <div class="author-avatar">AD</div>
+          <div class="author-name">Alexandre Dourado</div>
+          <div class="author-role">Arquitetura Digital · IA Aplicada</div>
+          <div class="author-tags">
+            <span class="author-tag">Estratégia Digital</span>
+            <span class="author-tag">IA Aplicada</span>
+            <span class="author-tag">Sistemas Inteligentes</span>
+            <span class="author-tag">Automação</span>
+            <span class="author-tag">Estrutura de Negócio</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="authority-right reveal">
+        <div class="label">Visão e autoridade</div>
+        <h2 class="display display--md">Uma perspectiva construída na prática, não no teórico.</h2>
+
+        <div class="authority-pillar">
+          <div class="pillar-num">01</div>
+          <div>
+            <div class="pillar-content-title">Profundidade antes de velocidade</div>
+            <p class="pillar-content-body">Mais de uma década trabalhando com negócios digitais revelou um padrão: os que duram são os que foram construídos com lógica, não os que foram lançados com urgência. Essa perspectiva orienta cada diagnóstico.</p>
+          </div>
+        </div>
+
+        <div class="authority-pillar">
+          <div class="pillar-num">02</div>
+          <div>
+            <div class="pillar-content-title">IA como arquitetura, não como truque</div>
+            <p class="pillar-content-body">A maioria usa IA para fazer mais rápido aquilo que já fazia antes. O trabalho aqui é diferente: integrar inteligência artificial como camada estrutural de um sistema — o que exige entender o negócio antes de escolher a ferramenta.</p>
+          </div>
+        </div>
+
+        <div class="authority-pillar">
+          <div class="pillar-num">03</div>
+          <div>
+            <div class="pillar-content-title">O diferencial é o método, não a tecnologia</div>
+            <p class="pillar-content-body">Qualquer um acessa as mesmas ferramentas. O que diferencia resultados é a capacidade de construir sistemas coerentes a partir delas — com uma lógica de arquitetura que a maioria ignora por completo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container--narrow">
+    <div class="label cta-eyebrow">Próximo passo</div>
+    <h2 class="display display--lg cta-headline">
+      Diagnóstico Estratégico AD
+    </h2>
+    <p class="cta-sub">
+      Uma conversa estruturada para mapear onde você está, identificar os gargalos reais e entender o que precisa ser construído — nessa ordem.
+    </p>
+
+    <div class="cta-actions">
+      <a href="#" class="btn-gold">
+        Agendar Diagnóstico Gratuito
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#" class="btn-ghost">Conhecer o método primeiro →</a>
+    </div>
+
+    <p class="cta-footnote">
+      Sem pitch. Sem pressão. Uma conversa para entender se faz sentido seguir juntos.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AD<span>·</span> Alexandre Dourado</div>
+  <div class="footer-text">Arquitetura Digital com IA Aplicada · Estrutura Inteligente</div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // stagger children
+        const children = entry.target.parentElement?.querySelectorAll('.reveal') || [];
+        children.forEach((child, i) => {
+          child.style.transitionDelay = `${i * 0.08}s`;
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth nav
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
