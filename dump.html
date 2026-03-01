@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRAIN DUMP</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Unbounded:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #fafaf8;
+    --black: #111110;
+    --gray-1: #f0efed;
+    --gray-2: #e2e1de;
+    --gray-3: #c4c3bf;
+    --gray-4: #8a8983;
+    --gray-5: #4a4945;
+    --red: #d4001a;
+    --red-light: #fdf0f2;
+
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'DM Mono', monospace;
+    --font-serif: 'Instrument Serif', serif;
+
+    --col: calc((100% - 11 * 16px) / 12);
+    --gap: 16px;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 13px; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-body);
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── GRID OVERLAY DEBUG (remove if needed) ─── */
+  /* body::after {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+    background: repeating-linear-gradient(90deg, rgba(255,0,0,.05) 0, rgba(255,0,0,.05) 1px, transparent 1px, transparent calc(var(--col) + var(--gap)));
+    background-size: calc(var(--col) + var(--gap)) 100%;
+    background-position: 32px 0;
+  } */
+
+  /* ─── SETUP OVERLAY ─── */
+  .setup-overlay {
+    position: fixed; inset: 0;
+    background: var(--white);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn .3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+  .setup-inner {
+    width: 560px;
+    max-width: 90vw;
+    padding: 0 24px;
+  }
+
+  .setup-inner .eyebrow {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .setup-inner .eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--red);
+  }
+
+  .setup-inner h1 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .setup-inner .subtitle {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gray-4);
+    margin-bottom: 40px;
+  }
+
+  .rule { width: 100%; height: 1px; background: var(--gray-2); margin-bottom: 32px; }
+
+  .setup-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .step-row {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--red);
+    padding-top: 1px;
+  }
+
+  .step-text {
+    font-size: 12px;
+    color: var(--gray-5);
+    line-height: 1.6;
+  }
+
+  .step-text code {
+    background: var(--gray-1);
+    border: 1px solid var(--gray-2);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 11px;
+    color: var(--black);
+  }
+
+  .setup-input {
+    width: 100%;
+    border: 1px solid var(--gray-2);
+    border-radius: 0;
+    background: transparent;
+    padding: 14px 16px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--black);
+    outline: none;
+    transition: border-color .15s;
+    margin-bottom: 12px;
+  }
+
+  .setup-input:focus { border-color: var(--black); }
+  .setup-input::placeholder { color: var(--gray-3); }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    padding: 15px 24px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s;
+  }
+
+  .btn-primary:hover { background: var(--red); }
+
+  /* ─── APP SHELL ─── */
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ─── HEADER ─── */
+  .app-header {
+    border-bottom: 1px solid var(--black);
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: stretch;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 100;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-right: 32px;
+    border-right: 1px solid var(--gray-2);
+  }
+
+  .brand-mark {
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: stretch;
+    padding: 0 32px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: var(--font-body);
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+    position: relative;
+  }
+
+  .nav-item:first-child { padding-left: 0; }
+
+  .nav-item.active { color: var(--black); border-bottom-color: var(--red); }
+  .nav-item:hover:not(.active) { color: var(--black); }
+
+  .nav-count {
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 700;
+    background: var(--black);
+    color: var(--white);
+    padding: 2px 6px;
+    border-radius: 2px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .nav-item.active .nav-count { background: var(--red); }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-left: 32px;
+    border-left: 1px solid var(--gray-2);
+  }
+
+  .header-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+  }
+
+  .header-stat .s-val {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .header-stat .s-lbl {
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+  }
+
+  .header-divider { width: 1px; height: 24px; background: var(--gray-2); }
+
+  /* ─── PANELS ─── */
+  .panel { display: none; flex: 1; }
+  .panel.active { display: flex; flex-direction: column; }
+
+  /* ─── DUMP PANEL ─── */
+  .dump-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    flex: 1;
+  }
+
+  .dump-main {
+    padding: 32px;
+    border-right: 1px solid var(--gray-2);
+    overflow-y: auto;
+  }
+
+  .dump-sidebar {
+    padding: 32px 28px;
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gray-2);
+  }
+
+  /* ITEM LIST */
+  .item-count-bar {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--gray-2);
+  }
+
+  .item-count-num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.04em;
+  }
+
+  .item-count-label {
+    font-size: 11px;
+    color: var(--gray-4);
+    letter-spacing: .05em;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .filter-input {
+    flex: 1;
+    border: 1px solid var(--gray-2);
+    background: transparent;
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--black);
+    outline: none;
+    transition: border-color .15s;
+    border-radius: 0;
+  }
+
+  .filter-input:focus { border-color: var(--black); }
+  .filter-input::placeholder { color: var(--gray-3); }
+
+  .filter-select {
+    border: 1px solid var(--gray-2);
+    background: var(--white);
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--black);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    padding-right: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%238a8983' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    border-radius: 0;
+    transition: border-color .15s;
+  }
+
+  .filter-select:focus { border-color: var(--black); }
+
+  /* ITEM ROW */
+  .item-list { display: flex; flex-direction: column; }
+
+  .item-row {
+    display: grid;
+    grid-template-columns: 3px 1fr auto;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-1);
+    align-items: center;
+    animation: rowIn .25s ease;
+    transition: background .1s;
+  }
+
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .item-row:hover { background: var(--gray-1); margin: 0 -16px; padding: 16px; }
+
+  .item-accent { height: 100%; min-height: 16px; border-radius: 1px; }
+
+  .item-body { min-width: 0; }
+
+  .item-text {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--black);
+    word-break: break-word;
+  }
+
+  .item-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .tag-cat {
+    border-color: var(--gray-2);
+    color: var(--gray-5);
+    background: transparent;
+  }
+
+  .tag-energia {
+    border-color: transparent;
+    background: var(--gray-1);
+    color: var(--gray-4);
+  }
+
+  .tag-ctx {
+    border-color: transparent;
+    color: var(--gray-3);
+    font-style: italic;
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 10px;
+  }
+
+  .item-del {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--gray-3);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .15s;
+    opacity: 0;
+    flex-shrink: 0;
+  }
+
+  .item-row:hover .item-del { opacity: 1; }
+  .item-del:hover { border-color: var(--red); color: var(--red); }
+
+  .empty-msg {
+    padding: 64px 0;
+    text-align: center;
+    color: var(--gray-3);
+  }
+
+  .empty-msg .big {
+    font-family: var(--font-display);
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: -.04em;
+    line-height: 1;
+    color: var(--gray-2);
+    margin-bottom: 16px;
+  }
+
+  .empty-msg p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--gray-4);
+    max-width: 300px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .capture-form { display: flex; flex-direction: column; gap: 10px; }
+
+  .capture-textarea {
+    width: 100%;
+    border: 1px solid var(--gray-2);
+    background: transparent;
+    padding: 12px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--black);
+    outline: none;
+    resize: none;
+    min-height: 100px;
+    line-height: 1.6;
+    transition: border-color .15s;
+    border-radius: 0;
+  }
+
+  .capture-textarea:focus { border-color: var(--black); }
+  .capture-textarea::placeholder { color: var(--gray-3); font-family: var(--font-serif); font-style: italic; }
+
+  .capture-selects {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .cap-select {
+    border: 1px solid var(--gray-2);
+    background: var(--white);
+    padding: 9px 10px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--black);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath fill='%238a8983' d='M0 0l4 5 4-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 24px;
+    border-radius: 0;
+    transition: border-color .15s;
+  }
+
+  .cap-select:focus { border-color: var(--black); }
+
+  .btn-capture {
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    padding: 12px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-capture:hover { background: var(--red); }
+
+  .btn-capture .shortcut {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 9px;
+    opacity: .5;
+    letter-spacing: .05em;
+  }
+
+  /* TRIGGERS */
+  .triggers-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .trigger-chip {
+    font-size: 10px;
+    font-family: var(--font-body);
+    padding: 5px 10px;
+    border: 1px solid var(--gray-2);
+    background: transparent;
+    color: var(--gray-5);
+    cursor: pointer;
+    transition: all .12s;
+    border-radius: 0;
+    letter-spacing: .02em;
+  }
+
+  .trigger-chip:hover { border-color: var(--gray-4); color: var(--black); }
+
+  .trigger-chip.active {
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--white);
+  }
+
+  .ctx-display {
+    font-size: 10px;
+    color: var(--gray-4);
+    padding: 6px 0;
+    border-top: 1px solid var(--gray-2);
+    display: none;
+  }
+
+  .ctx-display.visible { display: block; }
+
+  .ctx-display span { color: var(--red); }
+
+  /* ─── TRIAGEM PANEL ─── */
+  .triagem-header-bar {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--gray-2);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .progress-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-2);
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--black);
+    transition: width .4s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--gray-4);
+    white-space: nowrap;
+  }
+
+  .triagem-body { padding: 0 32px; }
+
+  .triagem-row {
+    display: grid;
+    grid-template-columns: 3px 1fr 150px 120px 240px;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-1);
+    align-items: stretch;
+    animation: rowIn .2s ease;
+  }
+
+  .triagem-row:hover { background: var(--gray-1); }
+
+  .triagem-row > * { padding: 14px 16px; }
+
+  .triagem-row .t-accent { padding: 0; min-height: 100%; }
+
+  .triagem-text { font-size: 12px; line-height: 1.5; color: var(--black); padding-left: 20px; }
+
+  .triagem-col { border-left: 1px solid var(--gray-2); }
+
+  .t-select {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--black);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    padding: 14px 28px 14px 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath fill='%238a8983' d='M0 0l4 5 4-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-color: transparent;
+    transition: background-color .15s;
+  }
+
+  .t-select:hover { background-color: var(--gray-1); }
+  .t-select:focus { background-color: var(--gray-1); }
+
+  .t-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--black);
+    outline: none;
+    padding: 14px 16px;
+    transition: background-color .15s;
+  }
+
+  .t-input:hover, .t-input:focus { background-color: var(--gray-1); }
+  .t-input::placeholder { color: var(--gray-3); }
+
+  .triagem-col-head {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--gray-2);
+    border-left: 1px solid var(--gray-2);
+  }
+
+  .triagem-col-head:first-of-type { border-left: none; }
+
+  .triagem-head-row {
+    display: grid;
+    grid-template-columns: 3px 1fr 150px 120px 240px;
+    border-bottom: 1px solid var(--black);
+    border-top: 1px solid var(--black);
+    position: sticky;
+    top: 52px;
+    background: var(--white);
+    z-index: 10;
+  }
+
+  /* ─── DECISÃO PANEL ─── */
+  .decisao-body { padding: 0 32px; }
+
+  .decisao-row {
+    display: grid;
+    grid-template-columns: 3px 1fr auto;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-1);
+    align-items: center;
+    animation: rowIn .2s ease;
+  }
+
+  .decisao-row:hover { background: var(--gray-1); }
+
+  .decisao-row > * { padding: 14px 16px; }
+  .decisao-row .d-accent { padding: 0; min-height: 100%; }
+
+  .decisao-text { font-size: 12px; line-height: 1.5; padding-left: 20px; }
+  .decisao-text .d-sub { font-size: 10px; color: var(--gray-4); margin-top: 3px; }
+
+  .decisao-btns {
+    display: flex;
+    gap: 0;
+    flex-shrink: 0;
+    border-left: 1px solid var(--gray-2);
+  }
+
+  .d-btn {
+    padding: 0 14px;
+    height: 100%;
+    min-height: 48px;
+    border: none;
+    border-left: 1px solid var(--gray-2);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    cursor: pointer;
+    transition: all .12s;
+    white-space: nowrap;
+  }
+
+  .d-btn:first-child { border-left: none; }
+  .d-btn:hover { background: var(--gray-1); color: var(--black); }
+
+  .d-btn.active-fazer   { background: #e8faf0; color: #1a7a3c; }
+  .d-btn.active-delegar { background: #e8f4fa; color: #1a5c7a; }
+  .d-btn.active-arquivar{ background: #f0f0fa; color: #3c3c8a; }
+  .d-btn.active-adiar   { background: #faf3e8; color: #7a5c1a; }
+  .d-btn.active-deletar { background: var(--red-light); color: var(--red); }
+
+  /* ─── DASHBOARD ─── */
+  .dash-body { padding: 32px; }
+
+  .dash-numbers {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border: 1px solid var(--black);
+    margin-bottom: 48px;
+  }
+
+  .dash-num-cell {
+    padding: 32px 24px;
+    border-right: 1px solid var(--black);
+  }
+
+  .dash-num-cell:last-child { border-right: none; }
+
+  .dash-num-cell .d-lbl {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 12px;
+  }
+
+  .dash-num-cell .d-val {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -.04em;
+    line-height: 1;
+  }
+
+  .d-val.v-fazer   { color: #1a7a3c; }
+  .d-val.v-delegar { color: #1a5c7a; }
+  .d-val.v-arquivar{ color: #3c3c8a; }
+  .d-val.v-deletar { color: var(--red); }
+
+  .cat-table { width: 100%; border-collapse: collapse; }
+
+  .cat-table th {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--black);
+    border-top: 1px solid var(--black);
+  }
+
+  .cat-table td {
+    padding: 12px 16px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--gray-1);
+    vertical-align: middle;
+  }
+
+  .cat-table tr:hover td { background: var(--gray-1); }
+
+  .cat-table .pct-cell { width: 200px; }
+
+  .bar-wrap { height: 3px; background: var(--gray-2); }
+  .bar-fill { height: 100%; background: var(--black); transition: width .6s ease; }
+
+  .export-row {
+    display: flex;
+    gap: 8px;
+    padding: 24px 32px;
+    border-top: 1px solid var(--gray-2);
+    margin-top: auto;
+  }
+
+  .btn-outline {
+    border: 1px solid var(--gray-2);
+    background: transparent;
+    padding: 10px 20px;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-5);
+    cursor: pointer;
+    transition: all .15s;
+    border-radius: 0;
+  }
+
+  .btn-outline:hover { border-color: var(--black); color: var(--black); }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(64px);
+    background: var(--black);
+    color: var(--white);
+    padding: 10px 20px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: .06em;
+    z-index: 999;
+    transition: transform .25s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.red { background: var(--red); }
+
+  .config-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gray-2);
+    background: var(--white);
+    color: var(--gray-4);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+    border-radius: 0;
+  }
+
+  .config-btn:hover { border-color: var(--black); color: var(--black); }
+
+  @media (max-width: 960px) {
+    .dump-grid { grid-template-columns: 1fr; }
+    .dump-sidebar { position: static; height: auto; border-top: 1px solid var(--gray-2); }
+    .triagem-row { grid-template-columns: 3px 1fr; }
+    .triagem-col.hide-mobile, .triagem-col-head.hide-mobile { display: none; }
+    .triagem-head-row { grid-template-columns: 3px 1fr; }
+    .decisao-btns { flex-wrap: wrap; }
+    .dash-numbers { grid-template-columns: repeat(2, 1fr); }
+    .header-right { display: none; }
+    .header-nav { gap: 0; padding: 0 16px; }
+    .nav-item { padding: 0 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-inner">
+    <div class="eyebrow">Brain Dump System — Setup</div>
+    <h1>Configuração<br>Inicial</h1>
+    <p class="subtitle">Conecte sua planilha para começar.</p>
+    <div class="rule"></div>
+    <div class="setup-steps">
+      <div class="step-row"><div class="step-num">01</div><div class="step-text">Crie uma Planilha Google nova</div></div>
+      <div class="step-row"><div class="step-num">02</div><div class="step-text">Vá em <code>Extensões → Apps Script</code> e cole o <code>Code.gs</code></div></div>
+      <div class="step-row"><div class="step-num">03</div><div class="step-text">Deploy: <code>Implantar → Nova implantação</code> como <code>App da Web</code>, acesso <code>Qualquer pessoa</code></div></div>
+      <div class="step-row"><div class="step-num">04</div><div class="step-text">Cole a URL gerada abaixo</div></div>
+    </div>
+    <input class="setup-input" type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/...">
+    <button class="btn-primary" onclick="saveConfig()">Conectar →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-mark"></div>
+      <div class="brand-name">Brain Dump</div>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-item active" onclick="switchTab('dump')">
+        01 — Dump <span class="nav-count" id="badgeDump">0</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('triagem')">
+        02 — Triagem <span class="nav-count" id="badgeTriagem">0</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('decisao')">
+        03 — Decisão <span class="nav-count" id="badgeDecisao">0</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('dashboard')">
+        04 — Overview
+      </button>
+    </nav>
+    <div class="header-right">
+      <div class="header-stat">
+        <div class="s-val" id="statTotal">0</div>
+        <div class="s-lbl">Total</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-stat">
+        <div class="s-val" id="statTriados">0</div>
+        <div class="s-lbl">Triados</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-stat">
+        <div class="s-val" id="statDecididos">0</div>
+        <div class="s-lbl">Decididos</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ PANEL: DUMP ══ -->
+  <div class="panel active" id="panel-dump">
+    <div class="dump-grid">
+
+      <div class="dump-main">
+        <div class="item-count-bar">
+          <div class="item-count-num" id="dumpCount">0</div>
+          <div class="item-count-label">itens capturados</div>
+        </div>
+
+        <div class="filter-row">
+          <input class="filter-input" type="text" id="filterInput" placeholder="Filtrar itens..." oninput="renderDumpList()">
+          <select class="filter-select" id="filterCat" onchange="renderDumpList()">
+            <option value="">Todas</option>
+            <option>Projeto</option><option>Ideia</option><option>Tarefa</option>
+            <option>Hábito/Rotina</option><option>Aprender</option><option>Relacionamento</option>
+            <option>Financeiro</option><option>Saúde</option><option>Reflexão</option><option>Lixo</option>
+          </select>
+        </div>
+
+        <div class="item-list" id="dumpList">
+          <div class="empty-msg">
+            <div class="big">0</div>
+            <p>A mente está cheia. Esvazie-a aqui, sem julgamento.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dump-sidebar">
+        <div>
+          <div class="section-label">Capturar</div>
+          <div class="capture-form">
+            <textarea class="capture-textarea" id="dumpInput" placeholder="O que está ocupando espaço mental?" rows="5"></textarea>
+            <div class="capture-selects">
+              <select class="cap-select" id="catSelect">
+                <option value="">Categoria</option>
+                <option>Projeto</option><option>Ideia</option><option>Tarefa</option>
+                <option>Hábito/Rotina</option><option>Aprender</option><option>Relacionamento</option>
+                <option>Financeiro</option><option>Saúde</option><option>Reflexão</option><option>Lixo</option>
+              </select>
+              <select class="cap-select" id="energiaSelect">
+                <option value="">Energia</option>
+                <option>Alta</option><option>Média</option><option>Baixa</option>
+              </select>
+            </div>
+            <button class="btn-capture" onclick="addItem()">
+              Capturar <span class="shortcut">⌘ + Enter</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label">Gatilhos mentais</div>
+          <div class="triggers-grid">
+            <button class="trigger-chip" onclick="setTrigger(this,'Trabalho')">Trabalho</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Pessoal')">Pessoal</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Família')">Família</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Dinheiro')">Dinheiro</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Saúde')">Saúde</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Estudos')">Estudos</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Proj. parados')">Proj. parados</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Pendências')">Pendências</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Relacionamentos')">Relacionamentos</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Sonhos')">Sonhos</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Medos')">Medos</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Conteúdos')">Conteúdos</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Hábitos')">Hábitos</button>
+            <button class="trigger-chip" onclick="setTrigger(this,'Ferramentas')">Ferramentas</button>
+          </div>
+          <div class="ctx-display" id="ctxDisplay">Contexto: <span id="ctxLabel">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL: TRIAGEM ══ -->
+  <div class="panel" id="panel-triagem">
+    <div class="triagem-header-bar">
+      <div style="font-size:11px; color:var(--gray-4); max-width:500px; line-height:1.6;">
+        Para cada item: defina a categoria, nível de energia e a próxima ação concreta.
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <div class="progress-fill" id="triagemProgress" style="width:0%"></div>
+        </div>
+        <div class="progress-label"><span id="triagemDone">0</span> / <span id="triagemTotal">0</span></div>
+      </div>
+    </div>
+
+    <div class="triagem-head-row">
+      <div></div>
+      <div class="triagem-col-head" style="border-left:none; padding-left:20px;">Item</div>
+      <div class="triagem-col-head">Categoria</div>
+      <div class="triagem-col-head hide-mobile">Energia</div>
+      <div class="triagem-col-head hide-mobile">Próxima ação</div>
+    </div>
+
+    <div class="triagem-body" style="padding:0;" id="triagemList">
+      <div style="padding:64px; text-align:center; color:var(--gray-3); font-family:var(--font-serif); font-style:italic;">
+        Carregando...
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL: DECISÃO ══ -->
+  <div class="panel" id="panel-decisao">
+    <div class="triagem-header-bar" style="border-bottom:1px solid var(--black);">
+      <div style="font-size:11px; color:var(--gray-4); line-height:1.6; max-width:600px;">
+        Decisão final por item — <strong style="color:var(--black)">Fazer</strong> · Delegar · Arquivar · Adiar · <strong style="color:var(--red)">Deletar</strong>. Se não for um "sim claro", é um não.
+      </div>
+    </div>
+    <div id="decisaoList">
+      <div style="padding:64px; text-align:center; color:var(--gray-3); font-family:var(--font-serif); font-style:italic;">
+        Carregando...
+      </div>
+    </div>
+    <div class="export-row">
+      <button class="btn-outline" onclick="exportCSV()">↓ Exportar CSV — Notion</button>
+      <button class="btn-outline" onclick="exportJSON()">⎘ Copiar JSON</button>
+    </div>
+  </div>
+
+  <!-- ══ PANEL: DASHBOARD ══ -->
+  <div class="panel" id="panel-dashboard">
+    <div class="dash-body">
+      <div class="dash-numbers">
+        <div class="dash-num-cell">
+          <div class="d-lbl">Total</div>
+          <div class="d-val" id="dashTotal">0</div>
+        </div>
+        <div class="dash-num-cell">
+          <div class="d-lbl">Fazer</div>
+          <div class="d-val v-fazer" id="dashFazer">0</div>
+        </div>
+        <div class="dash-num-cell">
+          <div class="d-lbl">Delegar</div>
+          <div class="d-val v-delegar" id="dashDelegar">0</div>
+        </div>
+        <div class="dash-num-cell">
+          <div class="d-lbl">Arquivar</div>
+          <div class="d-val v-arquivar" id="dashArquivar">0</div>
+        </div>
+        <div class="dash-num-cell">
+          <div class="d-lbl">Deletar</div>
+          <div class="d-val v-deletar" id="dashDeletar">0</div>
+        </div>
+      </div>
+
+      <div class="section-label">Por categoria</div>
+      <table class="cat-table">
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Itens</th>
+            <th class="pct-cell">Distribuição</th>
+          </tr>
+        </thead>
+        <tbody id="catTableBody"></tbody>
+      </table>
+    </div>
+    <div class="export-row">
+      <button class="btn-outline" onclick="exportCSV()">↓ Exportar CSV — Notion</button>
+      <button class="btn-outline" onclick="window.location.reload()">↺ Recarregar</button>
+    </div>
+  </div>
+
+</div><!-- /.app -->
+
+<div class="toast" id="toast"></div>
+<button class="config-btn" onclick="showSetup()" title="Reconfigurar">⚙</button>
+
+<script>
+// ─── STATE ───
+let SCRIPT_URL = localStorage.getItem('brainDumpUrl') || '';
+let items = [];
+let activeCtx = '';
+
+// ─── INIT ───
+window.onload = () => {
+  document.getElementById('setupOverlay').style.display = SCRIPT_URL ? 'none' : 'flex';
+  if (SCRIPT_URL) loadItems();
+  document.getElementById('dumpInput').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') addItem();
+  });
+};
+
+function saveConfig() {
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  if (!url.includes('script.google.com')) { toast('URL inválida', true); return; }
+  SCRIPT_URL = url;
+  localStorage.setItem('brainDumpUrl', url);
+  document.getElementById('setupOverlay').style.display = 'none';
+  loadItems();
+}
+
+function showSetup() {
+  document.getElementById('scriptUrlInput').value = SCRIPT_URL;
+  document.getElementById('setupOverlay').style.display = 'flex';
+}
+
+// ─── API ───
+async function apiGet(action) {
+  const r = await fetch(`${SCRIPT_URL}?action=${action}`, { redirect: 'follow' });
+  return r.json();
+}
+
+async function apiPost(data) {
+  const r = await fetch(SCRIPT_URL, {
+    method: 'POST', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(data)
+  });
+  return r.json();
+}
+
+async function loadItems() {
+  try {
+    const d = await apiGet('getAll');
+    items = d.items || [];
+    renderAll();
+  } catch { toast('Erro de conexão', true); }
+}
+
+// ─── ADD ───
+async function addItem() {
+  const input = document.getElementById('dumpInput');
+  const conteudo = input.value.trim();
+  if (!conteudo) { input.focus(); return; }
+
+  const item = {
+    conteudo,
+    categoria: document.getElementById('catSelect').value,
+    energia: document.getElementById('energiaSelect').value,
+    contexto: activeCtx
+  };
+
+  const tmp = { ID: 'tmp_' + Date.now(), Timestamp: new Date().toISOString(),
+    'Conteúdo': conteudo, 'Categoria': item.categoria, 'Energia': item.energia,
+    'Contexto': activeCtx, 'Decisão': '', 'Próxima Ação': '', Status: 'ATIVO' };
+  items.unshift(tmp);
+  input.value = '';
+  renderAll();
+  toast('Capturado');
+
+  try {
+    const r = await apiPost({ action: 'add', item });
+    tmp.ID = r.id;
+    updateStats();
+  } catch {
+    items = items.filter(i => i.ID !== tmp.ID);
+    renderDumpList();
+    toast('Erro ao salvar', true);
+  }
+}
+
+// ─── UPDATE / DELETE ───
+async function updateField(id, field, value) {
+  const item = items.find(i => i.ID === id);
+  if (item) item[field] = value;
+  updateStats();
+  try { await apiPost({ action: 'update', id, field, value }); }
+  catch { toast('Erro ao atualizar', true); }
+}
+
+async function deleteItem(id) {
+  if (!confirm('Remover este item?')) return;
+  items = items.filter(i => i.ID !== id);
+  renderAll();
+  try { await apiPost({ action: 'delete', id }); toast('Removido'); }
+  catch { toast('Erro', true); }
+}
+
+// ─── RENDER ───
+function renderAll() {
+  renderDumpList();
+  if (document.getElementById('panel-triagem').classList.contains('active')) renderTriagem();
+  if (document.getElementById('panel-decisao').classList.contains('active')) renderDecisao();
+  if (document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+  updateStats();
+}
+
+function getCatColor(cat) {
+  const m = {
+    'Projeto':'#5b50d6','Ideia':'#b89000','Tarefa':'#1a7a3c',
+    'Hábito/Rotina':'#1a6a7a','Aprender':'#c05a10','Relacionamento':'#a0306a',
+    'Financeiro':'#4a7a10','Saúde':'#1a6a50','Reflexão':'#6a40a0','Lixo':'#888'
+  };
+  return m[cat] || '#aaa';
+}
+
+function renderDumpList() {
+  const list = document.getElementById('dumpList');
+  const f = document.getElementById('filterInput').value.toLowerCase();
+  const cf = document.getElementById('filterCat').value;
+
+  const filtered = items.filter(i =>
+    (!f || (i['Conteúdo']||'').toLowerCase().includes(f)) &&
+    (!cf || i['Categoria'] === cf)
+  );
+
+  document.getElementById('dumpCount').textContent = filtered.length;
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-msg"><div class="big">${items.length > 0 ? '∅' : '0'}</div><p>${items.length > 0 ? 'Nenhum item corresponde ao filtro.' : 'A mente está cheia. Esvazie-a aqui, sem julgamento.'}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(item => {
+    const cat = item['Categoria'] || '';
+    const color = getCatColor(cat);
+    const ts = item['Timestamp'] ? new Date(item['Timestamp']).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : '';
+    return `
+      <div class="item-row">
+        <div class="item-accent" style="background:${color}"></div>
+        <div class="item-body">
+          <div class="item-text">${esc(item['Conteúdo']||'')}</div>
+          <div class="item-tags">
+            ${cat ? `<span class="tag tag-cat">${cat}</span>` : ''}
+            ${item['Energia'] ? `<span class="tag tag-energia">${item['Energia']}</span>` : ''}
+            ${item['Contexto'] ? `<span class="tag tag-ctx">${esc(item['Contexto'])}</span>` : ''}
+            ${ts ? `<span class="tag tag-energia" style="margin-left:auto">${ts}</span>` : ''}
+          </div>
+        </div>
+        <button class="item-del" onclick="deleteItem('${item.ID}')" title="Remover">✕</button>
+      </div>`;
+  }).join('');
+}
+
+function renderTriagem() {
+  const list = document.getElementById('triagemList');
+  if (!items.length) {
+    list.innerHTML = `<div style="padding:64px;text-align:center;color:var(--gray-3);font-family:var(--font-serif);font-style:italic;">Faça o Dump primeiro.</div>`;
+    return;
+  }
+
+  const done = items.filter(i => i['Energia'] && i['Próxima Ação']).length;
+  document.getElementById('triagemDone').textContent = done;
+  document.getElementById('triagemTotal').textContent = items.length;
+  document.getElementById('triagemProgress').style.width = (done/items.length*100)+'%';
+
+  list.innerHTML = items.map(item => {
+    const cat = item['Categoria'] || '';
+    const color = getCatColor(cat);
+    return `
+      <div class="triagem-row">
+        <div class="t-accent" style="background:${color}"></div>
+        <div class="triagem-text">${esc(item['Conteúdo']||'')}</div>
+        <div class="triagem-col">
+          <select class="t-select" onchange="updateField('${item.ID}','Categoria',this.value)">
+            <option value="">—</option>
+            ${catOpts(cat)}
+          </select>
+        </div>
+        <div class="triagem-col hide-mobile">
+          <select class="t-select" onchange="updateField('${item.ID}','Energia',this.value)">
+            <option value="">—</option>
+            ${energOpts(item['Energia'])}
+          </select>
+        </div>
+        <div class="triagem-col hide-mobile">
+          <input class="t-input" type="text" placeholder="Próxima ação concreta..."
+            value="${esc(item['Próxima Ação']||'')}"
+            onblur="updateField('${item.ID}','Próxima Ação',this.value)">
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderDecisao() {
+  const list = document.getElementById('decisaoList');
+  if (!items.length) {
+    list.innerHTML = `<div style="padding:64px;text-align:center;color:var(--gray-3);font-family:var(--font-serif);font-style:italic;">Faça o Dump primeiro.</div>`;
+    return;
+  }
+
+  const decs = ['Fazer','Delegar','Arquivar','Adiar','Deletar'];
+  list.innerHTML = items.map(item => {
+    const dec = item['Decisão'] || '';
+    const cat = item['Categoria'] || '';
+    const color = getCatColor(cat);
+    return `
+      <div class="decisao-row">
+        <div class="d-accent" style="background:${color};min-height:52px;"></div>
+        <div class="decisao-text" style="padding-left:20px;">
+          ${esc(item['Conteúdo']||'')}
+          ${item['Próxima Ação'] ? `<div class="d-sub">→ ${esc(item['Próxima Ação'])}</div>` : ''}
+        </div>
+        <div class="decisao-btns">
+          ${decs.map(d => {
+            const cls = dec === d ? `active-${d.toLowerCase()}` : '';
+            return `<button class="d-btn ${cls}" onclick="setDec('${item.ID}','${d}',this)">${d}</button>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setDec(id, dec, btn) {
+  btn.closest('.decisao-btns').querySelectorAll('.d-btn').forEach(b => {
+    b.className = 'd-btn';
+  });
+  btn.className = `d-btn active-${dec.toLowerCase()}`;
+  updateField(id, 'Decisão', dec);
+}
+
+function renderDashboard() {
+  document.getElementById('dashTotal').textContent = items.length;
+  const d = {};
+  const c = {};
+  items.forEach(i => {
+    const dec = i['Decisão']||'';
+    if (dec) d[dec] = (d[dec]||0)+1;
+    const cat = i['Categoria']||'Sem categoria';
+    c[cat] = (c[cat]||0)+1;
+  });
+  document.getElementById('dashFazer').textContent = d['Fazer']||0;
+  document.getElementById('dashDelegar').textContent = d['Delegar']||0;
+  document.getElementById('dashArquivar').textContent = d['Arquivar']||0;
+  document.getElementById('dashDeletar').textContent = d['Deletar']||0;
+
+  const max = Math.max(...Object.values(c), 1);
+  document.getElementById('catTableBody').innerHTML = Object.entries(c)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([cat, n]) => `
+      <tr>
+        <td style="color:${getCatColor(cat)}">${cat}</td>
+        <td style="font-family:var(--font-display);font-weight:700;">${n}</td>
+        <td class="pct-cell">
+          <div class="bar-wrap"><div class="bar-fill" style="width:${n/max*100}%;background:${getCatColor(cat)}"></div></div>
+        </td>
+      </tr>`).join('');
+}
+
+function updateStats() {
+  const total = items.length;
+  const triados = items.filter(i => i['Energia'] || i['Próxima Ação']).length;
+  const decididos = items.filter(i => i['Decisão']).length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statTriados').textContent = triados;
+  document.getElementById('statDecididos').textContent = decididos;
+  document.getElementById('badgeDump').textContent = total;
+  document.getElementById('badgeTriagem').textContent = triados;
+  document.getElementById('badgeDecisao').textContent = decididos;
+}
+
+// ─── TABS ───
+function switchTab(tab) {
+  document.querySelectorAll('.nav-item').forEach((b,i) => {
+    b.classList.toggle('active', ['dump','triagem','decisao','dashboard'][i] === tab);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (tab==='triagem') renderTriagem();
+  if (tab==='decisao') renderDecisao();
+  if (tab==='dashboard') renderDashboard();
+}
+
+// ─── TRIGGERS ───
+function setTrigger(el, ctx) {
+  document.querySelectorAll('.trigger-chip').forEach(c => c.classList.remove('active'));
+  if (activeCtx === ctx) {
+    activeCtx = '';
+    document.getElementById('ctxDisplay').classList.remove('visible');
+  } else {
+    activeCtx = ctx;
+    el.classList.add('active');
+    document.getElementById('ctxLabel').textContent = ctx;
+    document.getElementById('ctxDisplay').classList.add('visible');
+    document.getElementById('dumpInput').focus();
+  }
+}
+
+// ─── EXPORT ───
+function exportCSV() {
+  const headers = ['ID','Conteúdo','Categoria','Energia','Contexto','Decisão','Próxima Ação','Timestamp'];
+  const rows = items.map(i => headers.map(h => `"${(i[h]||'').toString().replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'}));
+  a.download = `brain-dump-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('CSV exportado');
+}
+
+function exportJSON() {
+  navigator.clipboard.writeText(JSON.stringify(items, null, 2));
+  toast('JSON copiado');
+}
+
+// ─── HELPERS ───
+function catOpts(sel) {
+  return ['Projeto','Ideia','Tarefa','Hábito/Rotina','Aprender','Relacionamento','Financeiro','Saúde','Reflexão','Lixo']
+    .map(c=>`<option ${c===sel?'selected':''}>${c}</option>`).join('');
+}
+
+function energOpts(sel) {
+  return ['Alta','Média','Baixa'].map(o=>`<option ${o===sel?'selected':''}>${o}</option>`).join('');
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (err?' red':'');
+  setTimeout(()=>t.className='toast', 2200);
+}
+</script>
+</body>
+</html>
