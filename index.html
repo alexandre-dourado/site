@@ -1,339 +1,111 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AD Estrutura | Arquitetura Digital & IA Aplicada</title>
-    <!-- Core Dependencies -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <style>
-        :root {
-            --navy: #020617;
-            --neon: #38bdf8;
-            --neon-glow: rgba(56, 189, 248, 0.4);
-        }
-
-        body { font-family: 'Inter', sans-serif; background: #fff; color: var(--navy); overflow-x: hidden; }
-
-        /* --- Optimized Effects --- */
-        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .metallic-neon {
-            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 25%, #38bdf8 50%, #94a3b8 75%, #f1f5f9 100%);
-            background-size: 200% 200%;
-            animation: silver-flow 8s ease infinite;
-        }
-
-        @keyframes silver-flow { 
-            0%, 100% { background-position: 0% 50%; } 
-            50% { background-position: 100% 50%; } 
-        }
-
-        .floating { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 
-            0%, 100% { transform: translate3d(0, 0, 0); } 
-            50% { transform: translate3d(0, -15px, 0) rotate(1deg); } 
-        }
-
-        .neon-pulse { animation: pulse-cyan 2s infinite; }
-        @keyframes pulse-cyan { 
-            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); } 
-            100% { box-shadow: 0 0 0 15px rgba(56, 189, 248, 0); } 
-        }
-
-        .glass-dark { background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
-        .glass-silver { background: rgba(241, 245, 249, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.5); }
-
-        .grid-bg { 
-            background-image: linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .gradient-mask-bottom {
-            mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-        }
-
-        .btn-metallic {
-            background: linear-gradient(135deg, #ffffff, #cbd5e1, #38bdf8);
-            background-size: 200% auto;
-            transition: 0.4s;
-        }
-        .btn-metallic:hover { background-position: right center; transform: translateY(-2px); box-shadow: 0 0 25px var(--neon-glow); }
-
-        /* Hardware Acceleration for Parallax */
-        .parallax-icon { will-change: transform; transition: transform 0.1s linear; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Notebook Simplificado</title>
+  <style>
+    /* Estilos super básicos e limpos para o Dark Mode */
+    body { margin: 0; display: flex; height: 100vh; font-family: sans-serif; background: #121212; color: #eee; }
+    #sidebar { width: 300px; background: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; }
+    #header { padding: 20px; border-bottom: 1px solid #333; }
+    button { width: 100%; padding: 10px; cursor: pointer; background: #c9a96e; border: none; font-weight: bold; border-radius: 4px; color: #121212; }
+    button:hover { background: #b0925c; }
+    #search { width: 100%; box-sizing: border-box; padding: 8px; margin-top: 15px; border-radius: 4px; border: 1px solid #444; background: #2a2a2a; color: white; }
+    #file-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
+    .file-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #2a2a2a; }
+    .file-item:hover { background: #2a2a2a; }
+    .file-item.active { background: #333; border-left: 4px solid #c9a96e; }
+    #main { flex: 1; display: flex; flex-direction: column; }
+    iframe { flex: 1; border: none; width: 100%; height: 100%; background: #fff; }
+    .welcome { padding: 40px; text-align: center; color: #888; }
+  </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <nav id="navbar" class="fixed w-full z-50 py-8 transition-all duration-500">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <img src="https://i.ibb.co/W4gMYQD8/adestrutura.png" id="main-logo" alt="AD Estrutura" class="h-20 md:h-28 object-contain transition-all duration-500">
-            
-            <div class="hidden md:flex items-center space-x-8 glass-silver px-10 py-3 rounded-full border border-slate-200 shadow-xl">
-                <a href="#metodo" class="text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-cyan-600 transition-colors">Conceito</a>
-                <a href="#beneficios" class="text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-cyan-600 transition-colors">Aplicações</a>
-                <a href="#pratica" class="text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-cyan-600 transition-colors">Método</a>
-                <button class="bg-slate-900 text-white px-6 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest hover:bg-cyan-600 transition-all">Consultoria</button>
-            </div>
+  <aside id="sidebar">
+    <div id="header">
+      <button id="btn-open-folder">📁 Escolher Pasta de Arquivos</button>
+      <input type="text" id="search" placeholder="Filtrar arquivos..." disabled>
+    </div>
+    <ul id="file-list"></ul>
+  </aside>
 
-            <button class="md:hidden glass-silver p-3 rounded-xl" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
-        </div>
-    </nav>
+  <main id="main">
+    <div id="welcome" class="welcome">
+      <h2>Seu Notebook Local</h2>
+      <p>Clique no botão ao lado e selecione sua pasta "docs" para listar os HTMLs.</p>
+    </div>
+    <iframe id="viewer" style="display:none;"></iframe>
+  </main>
 
-    <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center pt-32 grid-bg bg-slate-50 overflow-hidden">
-        <img src="https://i.ibb.co/1Y6g9f4F/logad.png" class="parallax-icon floating absolute w-[500px] -top-10 -right-20 opacity-[0.05]" data-speed="0.05">
+  <script>
+    let filesData = []; // Guarda as referências dos arquivos
+    const btnOpen = document.getElementById('btn-open-folder');
+    const fileList = document.getElementById('file-list');
+    const search = document.getElementById('search');
+    const iframe = document.getElementById('viewer');
+    const welcome = document.getElementById('welcome');
+
+    // Função que pede pro usuário escolher a pasta
+    btnOpen.addEventListener('click', async () => {
+      try {
+        // Abre a janela do sistema para escolher a pasta
+        const dirHandle = await window.showDirectoryPicker();
+        filesData = [];
         
-        <div class="max-w-7xl mx-auto px-6 relative z-10 w-full">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div class="reveal">
-                    <div class="inline-flex items-center space-x-3 bg-white px-4 py-2 rounded-lg border border-slate-200 mb-8 shadow-sm">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Arquitetura de Sistemas Inteligentes</span>
-                        <div class="w-2 h-2 bg-cyan-400 rounded-full neon-pulse"></div>
-                    </div>
-                    <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">IA Estruturada. <br><span class="text-cyan-500 italic">Resultados Reais.</span></h1>
-                    <p class="text-xl md:text-2xl text-slate-500 mb-10 max-w-xl font-light italic leading-relaxed">Não se trata de usar ferramentas por usar. É sobre criar uma base sólida para potencializar sua vida e seu negócio com inteligência aplicada.</p>
-                    <button class="btn-metallic text-navy px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-widest border border-white/50">Começar Diagnóstico Gratuito</button>
-                </div>
-
-                <div class="hidden lg:block reveal" style="transition-delay: 0.2s">
-                    <div class="metallic-neon p-1 rounded-[3.5rem] shadow-2xl rotate-2 hover:rotate-0 transition-all duration-700">
-                        <div class="bg-slate-900 rounded-[3.4rem] p-12 text-white relative overflow-hidden">
-                            <div class="space-y-6 relative z-10">
-                                <div class="flex justify-between items-center"><div class="h-1.5 w-16 bg-cyan-500 rounded-full"></div><span class="text-[8px] font-mono text-cyan-500 uppercase tracking-widest opacity-50">SYSTEM_BUILD_v6</span></div>
-                                <h3 class="text-3xl font-black leading-tight uppercase">Sistemas que <br> Amplificam Visão</h3>
-                                <div class="space-y-3">
-                                    <div class="p-4 bg-white/5 rounded-2xl border border-white/5 flex items-center space-x-3 text-xs opacity-80 italic"><i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i><span>Escalabilidade Ativa Habilitada</span></div>
-                                    <div class="p-4 bg-white/5 rounded-2xl border border-white/5 flex items-center space-x-3 text-xs opacity-80 italic"><i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i><span>IA Estrutural v6.0 Online</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 2: O Que É -->
-    <section id="metodo" class="py-32 bg-slate-950 text-white relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
-            <div class="reveal">
-                <span class="text-cyan-500 font-black text-[10px] uppercase tracking-widest mb-4 block">Conceito e Diferenciação</span>
-                <h2 class="text-5xl md:text-7xl font-black leading-tight italic mb-8 uppercase">Arquitetura <br><span class="text-slate-400">antes da IA.</span></h2>
-                <p class="text-xl text-slate-400 font-light leading-relaxed mb-8">IA bem aplicada não substitui você: ela <strong>amplifica sua capacidade</strong> de decisão, organização e execução. Criamos uma base sólida e modelamos processos antes de ligar os motores.</p>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="p-6 glass-dark rounded-3xl border-l-4 border-cyan-500"><h4 class="font-black text-lg uppercase text-cyan-400">Sistemas sobre Ferramentas</h4><p class="text-sm text-slate-500">Ferramentas soltas geram ruído. Arquitetura cria orquestração operacional.</p></div>
-                    <div class="p-6 glass-dark rounded-3xl border-l-4 border-slate-700 opacity-80"><h4 class="font-black text-lg uppercase text-slate-300">Potencialização Humana</h4><p class="text-sm text-slate-500">A IA cuida da repetição para que você cuide da estratégia e criatividade.</p></div>
-                </div>
-            </div>
-            <div class="reveal glass-dark p-12 rounded-[4rem] border border-white/5 text-center" style="transition-delay: 0.3s">
-                <h3 class="text-2xl font-black uppercase italic mb-10 tracking-widest">Diferencial AD Estrutura</h3>
-                <div class="space-y-8 text-left max-w-xs mx-auto">
-                    <div><span class="text-[9px] font-mono text-cyan-500 block">01</span><p class="font-bold uppercase tracking-tight">Antes de IA, Arquitetura.</p></div>
-                    <div class="opacity-60"><span class="text-[9px] font-mono text-slate-400 block">02</span><p class="font-bold uppercase tracking-tight">Antes de Design, Lógica.</p></div>
-                    <div class="opacity-30"><span class="text-[9px] font-mono text-slate-400 block">03</span><p class="font-bold uppercase tracking-tight">Antes de Escalar, Processos.</p></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 3: Benefícios -->
-    <section id="beneficios" class="py-32 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="mb-20 text-center reveal">
-                <h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase italic">Uso Inteligente <span class="text-cyan-600">em Todo Lugar</span></h2>
-                <p class="text-slate-500 mt-4 text-xl font-light">A AD Estrutura molda o seu mundo, do profissional ao pessoal.</p>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="p-8 glass-silver rounded-[2.5rem] border border-slate-100 reveal">
-                    <i data-lucide="briefcase" class="text-navy mb-6"></i>
-                    <h4 class="font-black uppercase mb-4">Negócios</h4>
-                    <p class="text-slate-500 text-xs leading-relaxed italic">Automatize tarefas e organize dados. Potencialize sua operação sem perder o controle da sua empresa.</p>
-                </div>
-                <div class="p-8 glass-silver rounded-[2.5rem] border border-slate-100 reveal" style="transition-delay: 0.1s">
-                    <i data-lucide="clapperboard" class="text-navy mb-6"></i>
-                    <h4 class="font-black uppercase mb-4">Criadores</h4>
-                    <p class="text-slate-500 text-xs leading-relaxed italic">Escalabilidade para conteúdos e produtos. A IA planeja enquanto você mantém sua visão única.</p>
-                </div>
-                <div class="p-8 glass-silver rounded-[2.5rem] border border-slate-100 reveal" style="transition-delay: 0.2s">
-                    <i data-lucide="user" class="text-navy mb-6"></i>
-                    <h4 class="font-black uppercase mb-4">Vida Pessoal</h4>
-                    <p class="text-slate-500 text-xs leading-relaxed italic">IA como assistente estratégica para gerenciar projetos, aprendizado e rotinas diárias com eficiência.</p>
-                </div>
-                <div class="p-8 glass-silver rounded-[2.5rem] border border-slate-100 reveal" style="transition-delay: 0.3s">
-                    <i data-lucide="bar-chart-3" class="text-navy mb-6"></i>
-                    <h4 class="font-black uppercase mb-4">Estratégia</h4>
-                    <p class="text-slate-500 text-xs leading-relaxed italic">Transforme insights em ações eficazes. Crie processos lógicos e explore novas oportunidades reais.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Transition Image -->
-    <section class="reveal">
-        <img src="https://i.ibb.co/9mC7mvmg/Chat-GPT-Image-18-de-fev-de-2026-06-47-35.png" class="w-full h-auto block" alt="Estrutura Digital">
-    </section>
-
-    <!-- Section 5: Como Funciona -->
-    <section id="pratica" class="py-32 relative bg-slate-50 overflow-hidden">
-        <div class="absolute inset-0 z-0 opacity-[0.4] pointer-events-none" style="background: url('https://i.ibb.co/zVQ4z1XM/WIN-20260218-06-33-49-Pro.jpg') center/cover"></div>
-        <div class="max-w-7xl mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-20 items-center">
-            <div class="reveal">
-                <span class="text-cyan-600 font-black text-[10px] uppercase tracking-widest mb-4 block">Workflow Operacional</span>
-                <h2 class="text-4xl md:text-6xl font-black italic mb-8 leading-none">O Caminho <br><span class="text-slate-400">para a Ordem.</span></h2>
-                <div class="space-y-4">
-                    <div class="p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-4">
-                        <span class="text-cyan-500 font-mono font-bold">01</span>
-                        <div><h4 class="font-bold text-xs uppercase">Diagnóstico Estrutural</h4><p class="text-[10px] text-slate-400 uppercase">Entendemos onde você está e o que precisa.</p></div>
-                    </div>
-                    <div class="p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-4">
-                        <span class="text-cyan-500 font-mono font-bold">02</span>
-                        <div><h4 class="font-bold text-xs uppercase">Arquitetura Digital</h4><p class="text-[10px] text-slate-400 uppercase">Criamos a planta base do seu sistema.</p></div>
-                    </div>
-                    <div class="p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-4">
-                        <span class="text-cyan-500 font-mono font-bold">03</span>
-                        <div><h4 class="font-bold text-xs uppercase">Modelagem com IA</h4><p class="text-[10px] text-slate-400 uppercase">Inteligência para potencializar decisões.</p></div>
-                    </div>
-                    <div class="p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-4">
-                        <span class="text-cyan-500 font-mono font-bold">04</span>
-                        <div><h4 class="font-bold text-xs uppercase">Escalabilidade</h4><p class="text-[10px] text-slate-400 uppercase">Otimização de processos e crescimento.</p></div>
-                    </div>
-                </div>
-            </div>
-            <div class="reveal flex justify-center" style="transition-delay: 0.2s">
-                <div class="aspect-square w-full max-w-md glass-dark rounded-[4rem] p-12 flex flex-col justify-center text-center group">
-                    <h3 class="text-white text-3xl font-black uppercase tracking-tighter italic mb-8">Operações <br> Inteligentes</h3>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/5">
-                        <span class="text-cyan-400 font-mono text-[10px] uppercase tracking-[0.4em] block mb-2">Result_Status</span>
-                        <div class="text-5xl font-black text-white">SCALABLE</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 6: Testemunhos -->
-    <section class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-8">
-            <div class="p-12 glass-silver rounded-[3rem] border border-slate-100 reveal">
-                <i data-lucide="quote" class="text-cyan-500 opacity-20 mb-6"></i>
-                <p class="text-xl italic text-slate-700 font-medium mb-8 leading-relaxed">“Aplicar IA sem estrutura é só ruído. Com a AD Estrutura, conseguimos automatizar processos estratégicos e aumentar produtividade sem perder controle.”</p>
-                <p class="text-xs font-black uppercase text-slate-900 tracking-widest">— Diretor de Operações</p>
-            </div>
-            <div class="p-12 glass-silver rounded-[3rem] border border-slate-100 reveal" style="transition-delay: 0.2s">
-                <i data-lucide="quote" class="text-cyan-500 opacity-20 mb-6"></i>
-                <p class="text-xl italic text-slate-700 font-medium mb-8 leading-relaxed">“Mais do que ferramentas, ganhamos clareza, lógica e escalabilidade. IA deixou de ser moda e virou aliada real no faturamento.”</p>
-                <p class="text-xs font-black uppercase text-slate-900 tracking-widest">— Fundador de Startup</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 7: Próximo Nível (Sidebar Image) -->
-    <section class="bg-slate-900 text-white flex flex-col md:flex-row overflow-hidden min-h-[500px]">
-        <div class="flex-1 py-32 px-12 flex flex-col justify-center reveal">
-            <div class="max-w-xl md:ml-auto">
-                <h2 class="text-4xl md:text-5xl font-black italic uppercase mb-8 tracking-tighter">O Próximo Nível da IA</h2>
-                <div class="space-y-6 text-xl text-slate-400 font-light leading-relaxed">
-                    <p>A primeira onda da IA trouxe euforia e curiosidade. Agora é hora do uso inteligente e estruturado.</p>
-                    <p>Não se trata de substituir pessoas, mas de multiplicar resultados e apoiar decisões com sistemas que funcionam de verdade.</p>
-                </div>
-            </div>
-        </div>
-        <div class="w-full md:w-1/3 reveal h-[400px] md:h-auto">
-            <img src="https://i.ibb.co/Vc7kKKfB/Gemini-Generated-Image-b9tgyrb9tgyrb9tg.png" class="w-full h-full object-cover" alt="IA Futura">
-        </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section class="py-40 bg-slate-950 text-white relative overflow-hidden min-h-screen flex items-center">
-        <img src="https://i.ibb.co/1Y6g9f4F/logad.png" class="parallax-icon absolute w-[1000px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.08]" data-speed="0.08">
-        <div class="absolute inset-0 pointer-events-none">
-            <img src="https://i.ibb.co/Fb4zk6MT/Generated-Image-February-18-2026-2-03-AM.png" class="w-full h-full object-cover opacity-20 gradient-mask-bottom" alt="Sucesso Estruturado">
-        </div>
+        // Varre a pasta procurando apenas arquivos .html
+        for await (const entry of dirHandle.values()) {
+          if (entry.kind === 'file' && entry.name.endsWith('.html')) {
+            filesData.push({ name: entry.name, handle: entry });
+          }
+        }
         
-        <div class="max-w-5xl mx-auto px-6 text-center relative z-10 reveal">
-            <h2 class="text-6xl md:text-9xl font-black italic leading-none mb-12 tracking-tighter uppercase">Escale com <br><span class="text-cyan-500">Estrutura.</span></h2>
-            <p class="text-2xl text-slate-400 mb-12 font-light max-w-2xl mx-auto">Quer transformar seu negócio e sua operação com IA de forma inteligente? Descubra como podemos estruturar seu sistema digital.</p>
-            <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                <button class="btn-metallic text-navy px-12 py-6 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.2em]">Agendar Consultoria</button>
-                <button class="px-12 py-6 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.2em] border border-white/10 hover:bg-white/5 transition-all">Diagnóstico Gratuito</button>
-            </div>
-        </div>
-    </section>
+        // Ordena em ordem alfabética por padrão
+        filesData.sort((a, b) => a.name.localeCompare(b.name));
+        
+        search.disabled = false;
+        renderList(filesData);
+        btnOpen.textContent = "🔄 Recarregar Pasta";
 
-    <!-- Footer -->
-    <footer class="py-20 bg-white border-t border-slate-100 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-20">
-                <img src="https://i.ibb.co/W4gMYQD8/adestrutura.png" class="h-28 md:h-36 object-contain" alt="Logo AD">
-                <div class="text-right">
-                    <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">Arquitetura Digital com IA</p>
-                    <div class="flex space-x-6 justify-end text-xs font-bold uppercase tracking-widest text-navy">
-                        <a href="#" class="hover:text-cyan-600 transition-colors">LinkedIn</a>
-                        <a href="#" class="hover:text-cyan-600 transition-colors">Instagram</a>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-8 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center text-[9px] font-mono text-slate-400 uppercase tracking-widest gap-4">
-                <p>© 2024 AD ESTRUTURA — ENGENHARIA DIGITAL DE FLUXOS</p>
-                <div class="flex items-center space-x-6">
-                    <span class="flex items-center"><div class="w-1.5 h-1.5 bg-cyan-500 rounded-full mr-2 shadow-[0_0_8px_#38bdf8]"></div> System Online</span>
-                    <span class="text-slate-200">|</span>
-                    <span>v.7.1.0</span>
-                </div>
-            </div>
-        </div>
-    </footer>
+      } catch (err) {
+        console.log("Seleção cancelada ou erro:", err);
+      }
+    });
 
-    <!-- Logic -->
-    <script>
-        lucide.createIcons();
+    // Função que desenha a lista na tela
+    function renderList(files) {
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.className = 'file-item';
+        // Remove o .html do nome para ficar mais limpo
+        li.textContent = file.name.replace('.html', ''); 
+        
+        // O que acontece ao clicar no arquivo:
+        li.onclick = async () => {
+          // Destaca o item clicado
+          document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+          li.classList.add('active');
 
-        // Optimized Reveal & Scroll Effects
-        const handleScroll = () => {
-            const scrolled = window.pageYOffset;
-            
-            // Navbar
-            const navbar = document.getElementById('navbar');
-            const logo = document.getElementById('main-logo');
-            if (scrolled > 50) {
-                navbar.classList.add('glass-silver', 'py-4', 'shadow-2xl');
-                navbar.classList.remove('py-8');
-                logo.classList.replace('h-20', 'h-14');
-                logo.classList.replace('md:h-28', 'md:h-16');
-            } else {
-                navbar.classList.remove('glass-silver', 'py-4', 'shadow-2xl');
-                navbar.classList.add('py-8');
-                logo.classList.replace('h-14', 'h-20');
-                logo.classList.replace('md:h-16', 'md:h-28');
-            }
-
-            // Parallax (throttled by requestAnimationFrame for performance)
-            document.querySelectorAll('.parallax-icon').forEach(el => {
-                const speed = parseFloat(el.dataset.speed);
-                el.style.transform = `translate3d(0, ${-(scrolled * speed)}px, 0)`;
-            });
+          // Lê o arquivo direto do seu PC e cria um link temporário pro iframe
+          const fileData = await file.handle.getFile();
+          const objectURL = URL.createObjectURL(fileData);
+          
+          welcome.style.display = 'none';
+          iframe.style.display = 'block';
+          iframe.src = objectURL;
         };
+        
+        fileList.appendChild(li);
+      });
+    }
 
-        // Reveal Observer
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        function toggleMenu() { alert("Use o scroll para navegar por todas as seções da arquitetura!"); }
-    </script>
+    // Filtro de busca na lista
+    search.addEventListener('input', (e) => {
+      const termo = e.target.value.toLowerCase();
+      const filtrados = filesData.filter(f => f.name.toLowerCase().includes(termo));
+      renderList(filtrados);
+    });
+  </script>
 </body>
 </html>
