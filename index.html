@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CÊFEI JÃO</title>
+  
+  <!-- Tailwind CSS para o layout e responsividade -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonte divertida do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Evita rolagem para manter a imersão */
+      background: radial-gradient(circle at center, #4a2111 0%, #140500 100%);
+      font-family: 'Luckiest Guy', cursive;
+    }
+
+    /* Animação do Feijão Principal */
+    .bean-float {
+      animation: float 4s ease-in-out infinite;
+      filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.7));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(-5deg); }
+      50% { transform: translateY(-30px) rotate(5deg); }
+    }
+
+    /* Estilo do Texto Impactante */
+    .title-text {
+      font-size: 15vw;
+      line-height: 0.9;
+      background: linear-gradient(to bottom, #ffe873, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 4px #3a1504; /* Borda ao redor do texto */
+      filter: drop-shadow(0 15px 15px rgba(0,0,0,0.8));
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (min-width: 768px) {
+      .title-text {
+        font-size: 8rem;
+      }
+    }
+
+    /* Partículas do Fundo (Feijõezinhos) */
+    .particle {
+      position: absolute;
+      opacity: 0.3;
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M150,50 C190,90 190,160 140,180 C80,200 20,150 40,90 C50,60 80,70 95,90 C110,110 120,20 150,50 Z" fill="%232c1206"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: rise linear infinite;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(110vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% { opacity: 0.4; }
+      90% { opacity: 0.4; }
+      100% {
+        transform: translateY(-20vh) rotate(360deg) scale(1.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen text-center relative">
+
+  <!-- Container de Partículas -->
+  <div id="particles-container" class="absolute inset-0 z-0 pointer-events-none"></div>
+
+  <!-- Conteúdo Principal -->
+  <main class="z-10 flex flex-col items-center justify-center p-4">
+    
+    <!-- O Feijão em SVG -->
+    <div class="bean-float mb-8 cursor-pointer hover:scale-110 transition-transform duration-300">
+      <svg width="300" height="300" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Gradiente do Feijão -->
+          <linearGradient id="beanGradient" x1="20%" y1="0%" x2="80%" y2="100%">
+            <stop offset="0%" stop-color="#e06b3a" />
+            <stop offset="50%" stop-color="#963511" />
+            <stop offset="100%" stop-color="#4a1502" />
+          </linearGradient>
+          
+          <!-- Brilho para dar volume -->
+          <linearGradient id="beanHighlight" x1="0%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <!-- Sombra interna/Corpo principal do Feijão -->
+        <path d="M150,50 C190,90 190,160 140,180 C80,200 20,150 40,90 C50,60 80,70 95,90 C110,110 120,20 150,50 Z" 
+              fill="url(#beanGradient)" />
+              
+        <!-- Volume e Reflexo (Brilho superior) -->
+        <path d="M140,55 C165,80 165,130 135,150 C115,160 140,120 145,95 C150,70 120,50 140,55 Z" 
+              fill="url(#beanHighlight)" />
+
+        <!-- Hilo do feijão (a "marquinha" branca/bege na curvatura) -->
+        <g transform="translate(90, 85) rotate(-35)">
+          <ellipse cx="0" cy="0" rx="14" ry="6" fill="#f0cba1" />
+          <ellipse cx="0" cy="0" rx="9" ry="2" fill="#541b04" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- O Texto -->
+    <h1 class="title-text uppercase tracking-wider">
+      CÊFEI<br>JÃO
+    </h1>
+
+  </main>
+
+  <script>
+    // Script para gerar a "chuva de feijões" no fundo da tela
+    const container = document.getElementById('particles-container');
+    const particleCount = 25; // Quantidade de feijõezinhos no fundo
+
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      
+      // Tamanho aleatório
+      const size = Math.random() * 30 + 15; 
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      // Posição horizontal aleatória
+      particle.style.left = `${Math.random() * 100}vw`;
+      
+      // Duração e atraso da animação aleatórios
+      particle.style.animationDuration = `${Math.random() * 8 + 6}s`; // Entre 6s e 14s
+      particle.style.animationDelay = `${Math.random() * 10}s`;
+      
+      container.appendChild(particle);
+    }
+  </script>
+</body>
+</html>
