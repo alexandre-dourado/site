@@ -19,6 +19,11 @@
     }
   ],
     {
+      "source": "/www",
+      "destination": "https://www-eosin-gamma.vercel.app"
+    }
+  ],
+    {
       "source": "/www/:path*",
       "destination": "https://www-eosin-gamma.vercel.app/:path*"
     }
