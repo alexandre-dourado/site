@@ -17,5 +17,10 @@
       "source": "/gara/:path*",
       "destination": "https://garamujo.vercel.app/:path*"
     }
+  ],
+    {
+      "source": "/www/:path*",
+      "destination": "https://www-eosin-gamma.vercel.app/:path*"
+    }
   ]
 }
