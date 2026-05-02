@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/afeac",
+      "destination": "https://afeac.vercel.app"
+    },
+    {
+      "source": "/afeac/:path*",
+      "destination": "https://afeac.vercel.app/:path*"
+    }
+  ]
+}
