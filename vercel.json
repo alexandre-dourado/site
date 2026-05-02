@@ -7,22 +7,19 @@
     {
       "source": "/afeac/:path*",
       "destination": "https://afeac.vercel.app/:path*"
-    }
-  ],
-     {
+    },
+    {
       "source": "/gara",
       "destination": "https://garamujo.vercel.app"
     },
     {
       "source": "/gara/:path*",
       "destination": "https://garamujo.vercel.app/:path*"
-    }
-  ],
+    },
     {
       "source": "/www",
       "destination": "https://www-eosin-gamma.vercel.app"
-    }
-  ],
+    },
     {
       "source": "/www/:path*",
       "destination": "https://www-eosin-gamma.vercel.app/:path*"
