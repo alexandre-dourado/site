@@ -16,5 +16,14 @@
       "source": "/www/:path*",
       "destination": "https://www-eosin-gamma.vercel.app/:path*"
     }
+  ],
+    {
+      "source": "/aoty",
+      "destination": "https://aoty-five.vercel.app/"
+    },
+    {
+      "source": "/aoty/:path*",
+      "destination": "https://aoty-five.vercel.app/:path*"
+    }
   ]
 }
