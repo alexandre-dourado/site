@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALEXADRE|DOURADO - Engenheiro de IA Aplicada</title>
+    <title>ALEXANDRE DOURADO - Engenheiro de IA Aplicada</title>
     <style>
         body, html {
             margin: 0;
@@ -17,97 +17,125 @@
             overflow: hidden;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
+        
         #slideshow {
             width: 100%;
             height: 100%;
             object-fit: contain;
             display: none;
         }
+
         #loader {
-            color: #FFFFFF;
-            font-size: 20px;
-            font-weight: bold;
-            letter-spacing: -0.5px;
-            text-transform: uppercase;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: #000000;
+            z-index: 10;
+        }
+
+        /* Animação minimalista para o SVG indicando carregamento */
+        @keyframes pulseLoader {
+            0% { opacity: 0.2; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.2; transform: scale(0.98); }
+        }
+
+        .aoty-svg {
+            width: 140px;
+            animation: pulseLoader 1.5s infinite ease-in-out;
         }
     </style>
 </head>
 <body>
 
+    <!-- Loader com SVG AOTY em estilo geométrico e rígido -->
+    <div id="loader">
+        <svg class="aoty-svg" viewBox="0 0 250 60" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#FF0000" stroke-width="12" stroke-linecap="square" stroke-linejoin="miter">
+                <!-- A -->
+                <polyline points="15,50 35,10 55,50" />
+                <line x1="25" y1="35" x2="45" y2="35" />
+                <!-- O -->
+                <rect x="85" y="10" width="30" height="40" />
+                <!-- T -->
+                <line x1="140" y1="10" x2="170" y2="10" />
+                <line x1="155" y1="10" x2="155" y2="50" />
+                <!-- Y -->
+                <polyline points="195,10 210,30 225,10" />
+                <line x1="210" y1="30" x2="210" y2="50" />
+            </g>
+        </svg>
+    </div>
     
     <img id="slideshow" src="" alt="Promptologia">
 
     <script>
-        // Configuração de cada frame e seus respectivos tempos em milissegundos
         const frames = [
-            { src: '1.png', time: 300 },
-            { src: '2.png', time: 200 },
-            { src: '3.png', time: 300 },
-            { src: '4.png', time: 300 },
-            { src: '5.png', time: 300 },
-            { src: '6.png', time: 300 },
-            { src: '7.png', time: 100 },
-            { src: '8.png', time: 300 },
-            { src: '9.png', time: 300 },
-            { src: '10.png', time: 300 },
-            { src: '11.png', time: 200 },
-            { src: '12.png', time: 300 },
-            { src: '13.png', time: 300 }
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/1.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/2.png', time: 200 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/3.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/4.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/5.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/6.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/7.png', time: 100 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/8.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/9.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/10.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/11.png', time: 200 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/12.png', time: 300 },
+            { src: 'https://raw.githubusercontent.com/alexandre-dourado/site/refs/heads/main/13.png', time: 300 }
         ];
 
         let loadedImagesCount = 0;
         const preloadedImages = [];
 
-        // 1. Pré-carregar todas as imagens na memória para evitar lentidão ou tela preta
         frames.forEach((frame, index) => {
             const img = new Image();
             img.onload = checkLoad;
-            img.onerror = checkLoad; // Continua mesmo se alguma imagem falhar
+            img.onerror = checkLoad; 
             img.src = frame.src;
             preloadedImages[index] = img;
         });
 
         function checkLoad() {
             loadedImagesCount++;
-            // Quando todas estiverem carregadas na memória, inicia a sequência
             if (loadedImagesCount === frames.length) {
                 startSequence();
             }
         }
 
-        // 2. Lógica da sequência de imagens
         function startSequence() {
+            // Remove o SVG AOTY da tela
             document.getElementById('loader').style.display = 'none';
             const slideEl = document.getElementById('slideshow');
             slideEl.style.display = 'block';
 
             let currentIndex = 0;
-            let loopsRemaining = 2; // Toca a sequência inteira 2 vezes para dar a sensação de loop antes de sair
+            let loopsRemaining = 2; 
 
             function showNextFrame() {
                 if (currentIndex >= frames.length) {
                     loopsRemaining--;
                     if (loopsRemaining > 0) {
-                        currentIndex = 0; // Reinicia o ciclo
+                        currentIndex = 0; 
                     } else {
-                        // Fim do ciclo visual: aguarda 3 segundos e redireciona
                         setTimeout(() => {
                             window.location.href = 'https://instagram.com/promptologia.oficial';
                         }, 3000);
-                        return; // Interrompe a recursão do slideshow
+                        return; 
                     }
                 }
 
-                // Troca a imagem atual
                 slideEl.src = frames[currentIndex].src;
                 const duration = frames[currentIndex].time;
                 currentIndex++;
 
-                // Chama o próximo frame no tempo configurado
                 setTimeout(showNextFrame, duration);
             }
 
-            // Inicia o primeiro frame
             showNextFrame();
         }
     </script>
